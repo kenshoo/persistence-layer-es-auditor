@@ -13,7 +13,6 @@ dependencies {
     compile libraries.apacheCommons3
     compile libraries.jacksonDataBind
     compile libraries.jacksonAnnotations
-    compile libraries.retryableRestClient
 
     testCompile libraries.junit
     testCompile libraries.hamcrest
