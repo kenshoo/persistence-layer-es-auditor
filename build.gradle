@@ -1,0 +1,64 @@
+plugins {
+    id "com.avast.gradle.docker-compose" version "0.6.12"
+}
+
+allprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'project-report'
+    apply plugin: "idea"
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    sourceSets {
+        integrationTest {
+            java {
+                compileClasspath += main.output + test.output
+                runtimeClasspath += main.output + test.output
+                srcDir file('src/integration-test/java')
+            }
+            resources.srcDir file('src/integration-test/resources')
+        }
+    }
+
+    idea {
+        module {
+            testSourceDirs += sourceSets.integrationTest.java.srcDirs
+            testResourceDirs += sourceSets.integrationTest.resources.srcDirs
+            scopes.TEST.plus += [ configurations.integrationTestCompile ]
+
+        }
+    }
+
+    configurations {
+        integrationTestCompile.extendsFrom testCompile
+        integrationTestRuntime.extendsFrom integrationTestCompile, testRuntime
+    }
+
+    task integrationTest(type: Test) {
+        description = 'Runs the integration tests.'
+        group = 'verification'
+        testClassesDirs = sourceSets.integrationTest.output.classesDirs
+        classpath = sourceSets.integrationTest.runtimeClasspath
+        outputs.upToDateWhen { false }
+        mustRunAfter test
+    }
+
+
+    check.dependsOn integrationTest
+}
+
+apply from: "${rootProject.projectDir}/dependencies.gradle"
+
+dependencies {
+    compile project(':main')
+}
+
+wrapper {
+    gradleVersion = '5.4.1'
+    distributionUrl = distributionUrl.replace("bin", "all")
+}

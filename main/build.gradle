@@ -1,0 +1,49 @@
+def BUILD_NUMBER = project.hasProperty('BUILD_NUMBER') ? "$BUILD_NUMBER" : 'undef'
+version = "0.1.$BUILD_NUMBER"
+group = 'com.kenshoo'
+def JAR_BASE_NAME = 'persistence-layer-es-auditor'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile libraries.persistenceLayer
+    compile libraries.slf4j
+    compile libraries.apacheCommons3
+    compile libraries.jacksonDataBind
+    compile libraries.jacksonAnnotations
+    compile libraries.retryableRestClient
+
+    testCompile libraries.junit
+    testCompile libraries.hamcrest
+    testCompile libraries.mockito
+    testCompile libraries.gson
+    testCompile libraries.wiremock
+    testCompile libraries.jsonAssert
+    testRuntime libraries.log4j
+}
+
+jar {
+    manifest {
+        attributes('Implementation-Title': JAR_BASE_NAME,
+                'Implementation-Version': project.version)
+    }
+    baseName = JAR_BASE_NAME
+}
+
+uploadArchives {
+    dependsOn jar
+    def username = System.env.MICROSERVICES_ARTIFACTORY_USER
+    def password = System.env.MICROSERVICES_ARTIFACTORY_PASSWORD
+    repositories {
+        mavenDeployer {
+            repository(url: "https://kenshoo.jfrog.io/kenshoo/simple/libs-releases-local/") {
+                authentication(userName: username, password: password)
+            }
+            snapshotRepository(url: "https://kenshoo.jfrog.io/kenshoo/simple/libs-snapshots-local/") {
+                authentication(userName: username, password: password)
+            }
+        }
+    }
+}

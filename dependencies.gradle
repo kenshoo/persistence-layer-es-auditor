@@ -1,0 +1,23 @@
+project.ext.set("libraries", "")
+
+def jacksonVersion = '2.9.1'
+def metrics3Version = '3.1.0'
+def javaxJsonVersion = '1.0'
+
+project.ext.libraries = [
+        persistenceLayer   : 'com.kenshoo:persistence-layer:0.1.77-jooq-3.11.12',
+        slf4j              : 'org.slf4j:slf4j-api:1.7.21',
+        apacheCommons3     : 'org.apache.commons:commons-lang3:3.4',
+        jacksonDataBind    : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+        jacksonAnnotations : "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion",
+
+        //Test libs
+        junit              : "junit:junit:4.12",
+        hamcrest           : 'org.hamcrest:hamcrest-library:1.3',
+        mockito            : 'org.mockito:mockito-core:3.2.0',
+        gson               : 'com.google.code.gson:gson:2.8.6',
+        wiremock           : 'com.github.tomakehurst:wiremock-standalone:2.24.1',
+        jsonAssert         : 'org.skyscreamer:jsonassert:1.5.0',
+        log4j              : 'org.slf4j:slf4j-log4j12:1.7.2',
+]
+
